@@ -9,8 +9,11 @@ import ColorPaletteView from './src/components/template/ColorPaletteView/ColorPa
 
 import BlurVIew from './src/components/atoms/BlurView/BlurView'
 import ScaleView from './src/screen/ScaleView/ScaleView'
+import { WebView } from 'react-native-webview';
 
 import { images } from './src/config';
+
+import data from './src/components/Html/siriwave/Html'
 
 export default function App() {
 
@@ -21,6 +24,8 @@ export default function App() {
     const closePanel = () => {
       setSwipeablePanelActive(false)
     }
+
+    const PolicyHTML = require('./siriwave/index.html');
 
     //投稿一覧、いいね一覧のタブ
     const tabs = [
@@ -38,34 +43,8 @@ export default function App() {
 
     return (
       <View style = {styles.container}>
-        {/* <React.Fragment>
 
-        <Button title="開く1" onPress={() => openPanel()} />
-
-        <SwipeablePanel
-          fullWidth
-          isActive={swipeablePanelActive}
-          onClose={closePanel}
-          onPressCloseButton={closePanel}
-          pointerEvents="box-none"
-          noBackgroundOpacity
-          onlySmall = {true}
-          style = {{backgroundColor: '#212223'}}
-        >
-            <View style = {styles.tabContainer}>
-            </View>
-            <Tab tabs = {tabs}/>
-        </SwipeablePanel>
-
-      </React.Fragment> */}
-      {/* <ColorSliderView/> */}
-      <ScaleView/>
-      {/* <Text
-          adjustsFontSizeToFit = {true}
-          numberOfLines={1}
-          style = {{fontSize: 100,width: 300,backgroundColor: 'red'}}
-          minimumFontScale={0.1}
-       >中曽根涼太中曽根涼太</Text> */}
+       <WebView style = {{height: 200,width: '100%',backgroundColor: 'red'}} source={{ html: data }} />
     </View>
     );
   }
@@ -73,8 +52,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    // alignItems: 'center',
+    // justifyContent: 'center',
 
   },
   tabContainer:{
