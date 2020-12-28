@@ -1,15 +1,17 @@
 import React from 'react';
 import styles from './styles'
-import { View, TouchableOpacity, Platform, Alert, ScrollView, Text, ListRenderItemInfo, FlatListProps, Dimensions, NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import { View, TouchableOpacity, Platform, Alert, ScrollView, Text, ListRenderItemInfo, FlatListProps, Dimensions, NativeScrollEvent, NativeSyntheticEvent, ViewToken } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import Carousel from 'react-native-snap-carousel';
 
 type Props = {
 }
 
-type DATA = {
-    tab: string[]
+interface Menu {
+    title: string;
+    menu: string
 }
+
 const component: React.FC<Props> = ({}) => {
 
     const carousel = React.useRef<any>(null);
@@ -20,61 +22,89 @@ const component: React.FC<Props> = ({}) => {
     //初期設定
     const ITEM_HEIGHT = 250
     const ITEM_SPEACE = 20
-    const ITEM_SIZE = ITEM_HEIGHT + ITEM_SPEACE
     
     const [tabindex, setTabIndex] = React.useState(0)
 
-    const data = ["abcd","abcd","abcd","abcd","abcd","abcd","abcd","abcd","abcd","abcd","abcd","abcd","abcd","abcd","abcd","abcd"]
-    const tabdata = ["tab1","tab2","tab3","tab4","tab5","tab6","tab7","tab8","tab9","tab10","tab11"]
+    const meniTitles = ['Menu1','Menu2','Menu3','Menu4',]
 
-    const sampledata:DATA[] = [{tab: ["data1","data2"]},{tab: ["data2","data3"]},{tab: ["data4","data5"]},{tab: ["data6","data7"]}]
+    const menus: Menu[] = [
+        {
+            title: 'Menu1-1',
+            menu: 'Menu1'
+        },
+        {
+            title: 'Menu1-2',
+            menu: 'Menu1'
+        },
+        {
+            title: 'Menu1-3',
+            menu: 'Menu1'
+        },
+        {
+            title: 'Menu2-1',
+            menu: 'Menu2'
+        },
+        {
+            title: 'Menu2-2',
+            menu: 'Menu2'
+        },
+        {
+            title: 'Menu3-1',
+            menu: 'Menu3'
+        },
+        {
+            title: 'Menu3-2',
+            menu: 'Menu3'
+        },
+        {
+            title: 'Menu3-3',
+            menu: 'Menu3'
+        },
+        {
+            title: 'Menu3-4',
+            menu: 'Menu3'
+        }
+    ]
 
-
-
-    
-    const _renderItem = (item: ListRenderItemInfo<DATA>) => {
+    const _renderItem = (item: ListRenderItemInfo<Menu>) => {
         return(
-            <>
-                {item.item.tab.map((listitem) => {
-                    return(
-                    <View style = {[styles.cardContainer,{height: ITEM_HEIGHT,marginVertical: ITEM_SPEACE}]}>
-                        <Text>{listitem}</Text>
-                    </View>
-
-                    )
-                })}
-            </>
-        )
-    }
-
-    const _renderTabItem = (item: ListRenderItemInfo<DATA>) => {
-        return(
-            <View style = {styles.tabItem}>
-                <Text style = {styles.tabText}>{item.index + 1}</Text>
+            <View style = {[styles.cardContainer,{height: ITEM_HEIGHT,marginVertical: ITEM_SPEACE}]}>
+                <Text>{item.item.title}</Text>
             </View>
         )
     }
 
-    const _scrollPosition = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-        let offsetY = e.nativeEvent.contentOffset.y // スクロール距離
-        let contentSizeHeight = e.nativeEvent.contentSize.height // scrollView contentSizeの高さ
+    const _renderTabItem = (item: ListRenderItemInfo<string>) => {
+        return(
+            <View style = {styles.tabItem}>
+                <Text style = {styles.tabText}>{item.item}</Text>
+            </View>
+        )
+    }
 
-        let itemnumber = Math.floor(offsetY / ITEM_SIZE) //現在スクロール中のアイテムの番号
-        console.log(itemnumber)
-
-        // const target = sampledata.find((item) => {
-        // });
-        if(itemnumber == 4){
-            console.log("４番目だよ")
-            setTabIndex(1)
+    const handleViewableItemsChanged = (info: {
+        viewableItems: ViewToken[];
+        changed: ViewToken[];
+    }) => {
+        if (info.viewableItems && info.viewableItems.length > 0 && info.viewableItems[0].item && info.viewableItems[0].item.menu) {
+            const menuTitle = info.viewableItems[0].item
+            const index = meniTitles.findIndex(item => item == menuTitle.menu)
+            setTabIndex(index)
         }
 
-        let scrollViewHeight = e.nativeEvent.layoutMeasurement.height // scrollViewの高さ
-    
-        if (offsetY + scrollViewHeight >= contentSizeHeight) {
-          console.log('scrollの終了')
-        }
-      }
+    };
+
+    const viewabilityConfigCallbackPairs = React.useRef([
+    {
+      viewabilityConfig: {
+        minimumViewTime: 50,
+        viewAreaCoveragePercentThreshold: 50,
+        waitForInteraction: true,
+      },
+      onViewableItemsChanged: handleViewableItemsChanged,
+    },
+  ]);
+
 	return (
         <View style = {styles.container}>
 
@@ -82,7 +112,7 @@ const component: React.FC<Props> = ({}) => {
             <Carousel
                 layout="default"
                 ref={carousel}
-                data={sampledata}
+                data={meniTitles}
                 renderItem={_renderTabItem}
                 sliderWidth={WIDTH_SCR}
                 itemHeight={HEIGHT_SCR / 50}
@@ -93,17 +123,17 @@ const component: React.FC<Props> = ({}) => {
             </View>
 
             <FlatList
-                onScrollAnimationEnd = {() => console.log("")}
-				data={sampledata}
-				numColumns={1}
-				renderItem={_renderItem}
+                onScrollAnimationEnd={() => console.log("")}
+                data={menus}
+                numColumns={1}
+                renderItem={_renderItem}
                 keyExtractor={(_, index) => `${index}`}
-                onScroll = {_scrollPosition}
-
+                viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
+                onEndReached={() => setTabIndex(meniTitles.length - 1)}
 			/>
         </View>
 	)
 
 }
 
-export default React.memo(component);
+export default component;
