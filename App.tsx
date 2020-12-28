@@ -6,14 +6,19 @@ import ColorSliderView from './src/components/template/ColorSliderView/ColorSlid
 import Tab from './src/components/atoms/EditorTab/EditorTab'
 import FontSelectView from './src/components/template/FontSelectView/FontSelectView';
 import ColorPaletteView from './src/components/template/ColorPaletteView/ColorPaletteView';
+import Map from './src/screen/Map/Map'
 
 import BlurVIew from './src/components/atoms/BlurView/BlurView'
 import ScaleView from './src/screen/ScaleView/ScaleView'
+import Sketch from './src/screen/Sketch/Sketch'
+import UberEatsScroll from './src/screen/UberEatsScroll/UberEatsScroll'
+
 import { WebView } from 'react-native-webview';
 
 import { images } from './src/config';
 
 import data from './src/components/Html/siriwave/Html'
+import Pay from './src/screen/Pay/Pay';
 
 export default function App() {
 
@@ -43,8 +48,7 @@ export default function App() {
 
     return (
       <View style = {styles.container}>
-
-       <WebView style = {{height: 200,width: '100%',backgroundColor: 'red'}} source={{ html: data }} />
+        <UberEatsScroll/>
     </View>
     );
   }
