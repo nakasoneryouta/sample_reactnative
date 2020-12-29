@@ -15,6 +15,7 @@ interface Menu {
 const component: React.FC<Props> = ({}) => {
 
     const carousel = React.useRef<any>(null);
+    const flatlist = React.useRef<any>(null);
 
     const WIDTH_SCR = Dimensions.get("screen").width;
     const HEIGHT_SCR = Dimensions.get('screen').height;
@@ -63,6 +64,22 @@ const component: React.FC<Props> = ({}) => {
         {
             title: 'Menu3-4',
             menu: 'Menu3'
+        },
+        {
+            title: 'Menu4-1',
+            menu: 'Menu4'
+        },
+        {
+            title: 'Menu4-2',
+            menu: 'Menu4'
+        },
+        {
+            title: 'Menu4-3',
+            menu: 'Menu4'
+        },
+        {
+            title: 'Menu4-4',
+            menu: 'Menu4'
         }
     ]
 
@@ -76,10 +93,17 @@ const component: React.FC<Props> = ({}) => {
 
     const _renderTabItem = (item: ListRenderItemInfo<string>) => {
         return(
-            <View style = {styles.tabItem}>
+            <TouchableOpacity style={styles.tabItem} onPress={() => onPressTab(item.item)}>
                 <Text style = {styles.tabText}>{item.item}</Text>
-            </View>
+            </TouchableOpacity>
         )
+    }
+
+    const onPressTab = (v: string) => {
+        const index = menus.findIndex(item => item.menu == v);
+        if (index >= 0) {
+            flatlist.current?.scrollToIndex({index: index, animated:  true})
+        }
     }
 
     const handleViewableItemsChanged = (info: {
@@ -123,6 +147,7 @@ const component: React.FC<Props> = ({}) => {
             </View>
 
             <FlatList
+                ref={flatlist}
                 onScrollAnimationEnd={() => console.log("")}
                 data={menus}
                 numColumns={1}
